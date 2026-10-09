@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import hashlib
 import hmac
-import os
 import json
+import os
 import secrets
 import socket
 import threading
@@ -174,20 +174,57 @@ def models() -> list[str]:
     return sorted(NotionAdapter(_pool or AccountPool())._models)
 
 
+def overview() -> list[dict[str, Any]]:
+    """Card rows for the tab overview (literal titles; the card renderer shows
+    values as-is — the vocabulary has no per-value i18n)."""
+    running = bool(_thread is not None and _thread.is_alive())
+    stats = _pool.stats() if _pool else []
+    alive = sum(1 for stat in stats if stat["available"])
+    return [
+        {"title": "Мост", "value": "● работает" if running else "— остановлен"},
+        {"title": "Модели", "value": str(len(models()))},
+        {"title": "Аккаунты", "value": f"{alive}/{len(stats)}"},
+        {"title": "Адрес", "value": _endpoint or "—"},
+    ]
+
+
+def help_text() -> dict[str, Any]:
+    """Markdown how-to shown at the top of the tab."""
+    text = "\n".join(
+        [
+            "### Как включить",
+            "1. Возьмите куку `token_v2` (браузер → DevTools → Application → Cookies → notion.so).",
+            "2. Возьмите `space_id` рабочего пространства Notion.",
+            "3. Вставьте оба значения ниже и нажмите «Добавить аккаунт».",
+            "4. Нажмите «Запустить мост» — модели появятся в AI Hub как провайдер `notion`.",
+        ]
+    )
+    return {"text": text}
+
+
 def accounts_list() -> list[dict[str, Any]]:
     data_dir = _data_path()
+    stats_by_id = {stat["id"]: stat for stat in (_pool.stats() if _pool else [])}
     rows = []
     for row in storage.list_accounts(_db_path):
         try:
             credential = crypto.decrypt(data_dir, str(row["credential"]))
         except Exception:  # noqa: BLE001
             credential = ""
+        stat = stats_by_id.get(str(row["id"]))
+        if stat is None:
+            state = "—"
+        elif stat["available"]:
+            state = "● ok"
+        else:
+            state = f"⏳ {stat['cooldown_s']}s"
         rows.append(
             {
                 "id": row["id"],
                 "weight": row["weight"],
                 "proxy": row["proxy"] or "—",
-                "has_credential": bool(credential),
+                "session": "✓" if credential else "—",
+                "state": state,
             }
         )
     return rows

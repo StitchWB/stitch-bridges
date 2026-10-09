@@ -2,7 +2,7 @@
   "schema": "stitch.plugin/v2",
   "id": "stitch-bridges",
   "name": "Web AI Bridges",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "service": "bridges",
   "kind": "service",
   "engine": {
@@ -30,6 +30,15 @@
     {"title": {"ru": "Шифрованное хранение сессий", "en": "Encrypted session storage"}, "status": "beta"}
   ],
   "changelog": [
+    {
+      "version": "0.1.1",
+      "date": "2026-10-08",
+      "changes": [
+        "Overview cards (bridge status, model count, accounts, endpoint)",
+        "In-tab how-to guide",
+        "Per-account state column (available / cooldown)"
+      ]
+    },
     {"version": "0.1.0", "date": "2026-10-08", "changes": ["Initial release"]}
   ],
   "generated_by": "stitch_plugin_tools scaffold v3",
@@ -38,6 +47,8 @@
       {"name": "health_check", "readonly": true},
       {"name": "status", "readonly": true},
       {"name": "bridges_list", "readonly": true},
+      {"name": "overview", "readonly": true},
+      {"name": "help_text", "readonly": true},
       {"name": "models", "readonly": true},
       {"name": "accounts_list", "readonly": true},
       {"name": "accounts_add", "readonly": false},
@@ -57,9 +68,14 @@
           {"kind": "heading", "text": "stitch-bridges.overview", "level": 2},
           {
             "kind": "card_grid",
-            "id": "bridges",
-            "source": {"command": "bridges_list"},
-            "card": {"title": "name", "subtitle": "endpoint", "body": "running"}
+            "id": "overview",
+            "source": {"command": "overview"},
+            "card": {"title": "title", "subtitle": "value"}
+          },
+          {
+            "kind": "markdown",
+            "id": "howto",
+            "source": {"command": "help_text"}
           },
           {
             "kind": "section",
@@ -72,7 +88,8 @@
                   {"key": "id", "label": "stitch-bridges.col.account"},
                   {"key": "weight", "label": "stitch-bridges.col.weight"},
                   {"key": "proxy", "label": "stitch-bridges.col.proxy"},
-                  {"key": "has_credential", "label": "stitch-bridges.col.credential"}
+                  {"key": "session", "label": "stitch-bridges.col.session"},
+                  {"key": "state", "label": "stitch-bridges.col.state"}
                 ],
                 "source": {"command": "accounts_list"},
                 "rowActions": [
@@ -133,7 +150,8 @@
             "account": "Аккаунт",
             "weight": "Вес",
             "proxy": "Прокси",
-            "credential": "Сессия"
+            "session": "Сессия",
+            "state": "Состояние"
           },
           "field": {
             "credential": "Сессионная кука (token_v2)",
@@ -160,7 +178,8 @@
             "account": "Account",
             "weight": "Weight",
             "proxy": "Proxy",
-            "credential": "Session"
+            "session": "Session",
+            "state": "State"
           },
           "field": {
             "credential": "Session cookie (token_v2)",

@@ -10,6 +10,7 @@ from typing import Any
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from stitch_bridges import service
 from stitch_bridges.bridge.adapters.base import TransientError, flatten_messages
 from stitch_bridges.bridge.adapters.notion import NotionAdapter
 from stitch_bridges.bridge.app import build_app
@@ -129,6 +130,13 @@ def test_app_streams_and_completes() -> None:
             assert full.json()["choices"][0]["message"]["content"] == "hello"
 
     asyncio.run(run())
+
+
+def test_overview_and_help_rows() -> None:
+    rows = service.overview()
+    assert [row["title"] for row in rows] == ["Мост", "Модели", "Аккаунты", "Адрес"]
+    text = service.help_text()["text"]
+    assert "Как включить" in text
 
 
 def test_manifest_labels_resolve() -> None:

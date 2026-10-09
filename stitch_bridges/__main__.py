@@ -63,6 +63,14 @@ def _handle_bridges_list(params: dict[str, Any]) -> list[dict[str, Any]]:
     return service.bridges_list()
 
 
+def _handle_overview(params: dict[str, Any]) -> list[dict[str, Any]]:
+    return service.overview()
+
+
+def _handle_help_text(params: dict[str, Any]) -> dict[str, Any]:
+    return service.help_text()
+
+
 def _handle_models(params: dict[str, Any]) -> list[str]:
     return service.models()
 
@@ -98,6 +106,8 @@ def main() -> None:
     server.register("health_check", _handle_health_check)
     server.register("status", _handle_status)
     server.register("bridges_list", _handle_bridges_list)
+    server.register("overview", _handle_overview)
+    server.register("help_text", _handle_help_text)
     server.register("models", _handle_models)
     server.register("accounts_list", _handle_accounts_list)
     server.register("accounts_add", _handle_accounts_add)
