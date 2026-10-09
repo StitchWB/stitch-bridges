@@ -1,0 +1,182 @@
+{
+  "schema": "stitch.plugin/v2",
+  "id": "stitch-bridges",
+  "name": "Web AI Bridges",
+  "version": "0.1.0",
+  "service": "bridges",
+  "kind": "service",
+  "engine": {
+    "min": "0.3.0",
+    "api": 2
+  },
+  "depends": [],
+  "entry": {
+    "module": "stitch_bridges"
+  },
+  "capabilities": [],
+  "outputs": [],
+  "signature": "",
+  "description": {
+    "ru": "Мосты к веб-ИИ: превращают агент-чат сервисов (Notion и др.) в OpenAI-совместимый провайдер для AI Hub. Пул аккаунтов, ротация, cooldown, шифрованное хранение сессий.",
+    "en": "Web AI bridges: turn service agent chats (Notion, …) into an OpenAI-compatible provider for AI Hub. Account pool, rotation, cooldown, encrypted session storage."
+  },
+  "author": "WhiteBite",
+  "category": "ai-tools",
+  "status": "beta",
+  "icon": "🌉",
+  "features": [
+    {"title": {"ru": "Мост Notion → OpenAI API", "en": "Notion → OpenAI API bridge"}, "status": "beta"},
+    {"title": {"ru": "Пул аккаунтов с cooldown и ротацией", "en": "Account pool with cooldown and rotation"}, "status": "beta"},
+    {"title": {"ru": "Шифрованное хранение сессий", "en": "Encrypted session storage"}, "status": "beta"}
+  ],
+  "changelog": [
+    {"version": "0.1.0", "date": "2026-10-08", "changes": ["Initial release"]}
+  ],
+  "generated_by": "stitch_plugin_tools scaffold v3",
+  "contributions": {
+    "commands": [
+      {"name": "health_check", "readonly": true},
+      {"name": "status", "readonly": true},
+      {"name": "bridges_list", "readonly": true},
+      {"name": "models", "readonly": true},
+      {"name": "accounts_list", "readonly": true},
+      {"name": "accounts_add", "readonly": false},
+      {"name": "accounts_remove", "readonly": false},
+      {"name": "bridge_start", "readonly": false},
+      {"name": "bridge_stop", "readonly": false},
+      {"name": "set_api_key", "readonly": false}
+    ],
+    "ui": {
+      "kind": "declarative",
+      "tabs": [
+        {"id": "bridges", "label": "stitch-bridges.tab", "icon": "Waypoints", "page": "main"}
+      ],
+      "page": {
+        "title": "stitch-bridges.title",
+        "nodes": [
+          {"kind": "heading", "text": "stitch-bridges.overview", "level": 2},
+          {
+            "kind": "card_grid",
+            "id": "bridges",
+            "source": {"command": "bridges_list"},
+            "card": {"title": "name", "subtitle": "endpoint", "body": "running"}
+          },
+          {
+            "kind": "section",
+            "title": "stitch-bridges.accounts",
+            "nodes": [
+              {
+                "kind": "table",
+                "id": "accounts",
+                "columns": [
+                  {"key": "id", "label": "stitch-bridges.col.account"},
+                  {"key": "weight", "label": "stitch-bridges.col.weight"},
+                  {"key": "proxy", "label": "stitch-bridges.col.proxy"},
+                  {"key": "has_credential", "label": "stitch-bridges.col.credential"}
+                ],
+                "source": {"command": "accounts_list"},
+                "rowActions": [
+                  {
+                    "id": "remove-account",
+                    "label": "stitch-bridges.action.remove",
+                    "command": "accounts_remove",
+                    "variant": "danger",
+                    "paramsFromRow": {"id": "id"}
+                  }
+                ]
+              },
+              {
+                "kind": "field",
+                "field": "text",
+                "id": "acc-credential",
+                "label": "stitch-bridges.field.credential",
+                "placeholder": "stitch-bridges.field.credentialHint"
+              },
+              {
+                "kind": "field",
+                "field": "text",
+                "id": "acc-space",
+                "label": "stitch-bridges.field.space",
+                "placeholder": "stitch-bridges.field.spaceHint"
+              },
+              {
+                "kind": "button",
+                "id": "add-account",
+                "label": "stitch-bridges.action.add",
+                "command": "accounts_add",
+                "params": {"id": "", "credential": "", "space_id": ""},
+                "paramsFrom": {"credential": "acc-credential", "space_id": "acc-space"},
+                "variant": "primary"
+              }
+            ]
+          },
+          {
+            "kind": "section",
+            "title": "stitch-bridges.controls",
+            "nodes": [
+              {"kind": "button", "id": "start", "label": "stitch-bridges.action.start", "command": "bridge_start", "variant": "primary"},
+              {"kind": "button", "id": "stop", "label": "stitch-bridges.action.stop", "command": "bridge_stop", "variant": "danger"}
+            ]
+          }
+        ]
+      }
+    },
+    "i18n": {
+      "ru": {
+        "stitch-bridges": {
+          "tab": "Мосты",
+          "title": "Мосты к веб-ИИ",
+          "overview": "Обзор",
+          "accounts": "Аккаунты",
+          "controls": "Управление",
+          "col": {
+            "account": "Аккаунт",
+            "weight": "Вес",
+            "proxy": "Прокси",
+            "credential": "Сессия"
+          },
+          "field": {
+            "credential": "Сессионная кука (token_v2)",
+            "credentialHint": "вставьте значение куки token_v2",
+            "space": "Space ID",
+            "spaceHint": "uuid рабочего пространства Notion"
+          },
+          "action": {
+            "add": "Добавить аккаунт",
+            "remove": "Удалить",
+            "start": "Запустить мост",
+            "stop": "Остановить"
+          }
+        }
+      },
+      "en": {
+        "stitch-bridges": {
+          "tab": "Bridges",
+          "title": "Web AI Bridges",
+          "overview": "Overview",
+          "accounts": "Accounts",
+          "controls": "Controls",
+          "col": {
+            "account": "Account",
+            "weight": "Weight",
+            "proxy": "Proxy",
+            "credential": "Session"
+          },
+          "field": {
+            "credential": "Session cookie (token_v2)",
+            "credentialHint": "paste the token_v2 cookie value",
+            "space": "Space ID",
+            "spaceHint": "Notion workspace uuid"
+          },
+          "action": {
+            "add": "Add account",
+            "remove": "Remove",
+            "start": "Start bridge",
+            "stop": "Stop"
+          }
+        }
+      }
+    },
+    "storage": {"sqlite": true, "migrations": "raw_sql"}
+  }
+}
