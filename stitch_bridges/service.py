@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import os
 import json
 import secrets
 import socket
@@ -24,6 +25,7 @@ from .bridge.pool import Account, AccountPool
 
 PLUGIN_ID = "stitch-bridges"
 ADAPTER_NAME = "notion"
+SIDECAR_NAME = "notion_bridge"
 STATE_FILENAME = "bridge_state.json"
 STATE_KEY_FILENAME = "state.key"
 
@@ -81,9 +83,11 @@ def _write_state(running: bool) -> None:
     data_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "plugin_id": PLUGIN_ID,
-        "sidecar_name": ADAPTER_NAME,
+        "sidecar": SIDECAR_NAME,
         "running": running,
         "endpoint": _endpoint,
+        "port": int(_endpoint.rsplit(":", 1)[1]) if _endpoint else 0,
+        "pid": os.getpid(),
         "accounts": len(_pool) if _pool else 0,
         "updated_at": time.time(),
     }
