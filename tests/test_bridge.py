@@ -134,7 +134,7 @@ def test_app_streams_and_completes() -> None:
 
 def test_overview_and_help_rows() -> None:
     rows = service.overview()
-    assert [row["title"] for row in rows] == ["Мост", "Модели", "Аккаунты", "Адрес"]
+    assert [row["title"] for row in rows] == ["Мост", "Модели", "Аккаунты"]
     text = service.help_text()["text"]
     assert "Как включить" in text
 

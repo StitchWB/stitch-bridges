@@ -184,7 +184,6 @@ def overview() -> list[dict[str, Any]]:
         {"title": "Мост", "value": "● работает" if running else "— остановлен"},
         {"title": "Модели", "value": str(len(models()))},
         {"title": "Аккаунты", "value": f"{alive}/{len(stats)}"},
-        {"title": "Адрес", "value": _endpoint or "—"},
     ]
 
 
@@ -192,8 +191,8 @@ def help_text() -> dict[str, Any]:
     """Markdown how-to shown at the top of the tab."""
     text = "\n".join(
         [
-            "### Как включить",
-            "1. Возьмите куку `token_v2` (браузер → DevTools → Application → Cookies → notion.so).",
+            "**Как включить**",
+            "1. Возьмите куку `token_v2` (браузер → DevTools → Application → Cookies).",
             "2. Возьмите `space_id` рабочего пространства Notion.",
             "3. Вставьте оба значения ниже и нажмите «Добавить аккаунт».",
             "4. Нажмите «Запустить мост» — модели появятся в AI Hub как провайдер `notion`.",

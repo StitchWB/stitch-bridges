@@ -2,7 +2,7 @@
   "schema": "stitch.plugin/v2",
   "id": "stitch-bridges",
   "name": "Web AI Bridges",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "service": "bridges",
   "kind": "service",
   "engine": {
@@ -30,6 +30,15 @@
     {"title": {"ru": "Шифрованное хранение сессий", "en": "Encrypted session storage"}, "status": "beta"}
   ],
   "changelog": [
+    {
+      "version": "0.1.2",
+      "date": "2026-10-08",
+      "changes": [
+        "Even 3-up overview cards",
+        "Stop action no longer styled as destructive",
+        "Shorter form placeholders"
+      ]
+    },
     {
       "version": "0.1.1",
       "date": "2026-10-08",
@@ -132,7 +141,7 @@
             "title": "stitch-bridges.controls",
             "nodes": [
               {"kind": "button", "id": "start", "label": "stitch-bridges.action.start", "command": "bridge_start", "variant": "primary"},
-              {"kind": "button", "id": "stop", "label": "stitch-bridges.action.stop", "command": "bridge_stop", "variant": "danger"}
+              {"kind": "button", "id": "stop", "label": "stitch-bridges.action.stop", "command": "bridge_stop", "variant": "secondary"}
             ]
           }
         ]
@@ -155,9 +164,9 @@
           },
           "field": {
             "credential": "Сессионная кука (token_v2)",
-            "credentialHint": "вставьте значение куки token_v2",
+            "credentialHint": "token_v2",
             "space": "Space ID",
-            "spaceHint": "uuid рабочего пространства Notion"
+            "spaceHint": "uuid пространства"
           },
           "action": {
             "add": "Добавить аккаунт",
@@ -183,9 +192,9 @@
           },
           "field": {
             "credential": "Session cookie (token_v2)",
-            "credentialHint": "paste the token_v2 cookie value",
+            "credentialHint": "token_v2",
             "space": "Space ID",
-            "spaceHint": "Notion workspace uuid"
+            "spaceHint": "workspace uuid"
           },
           "action": {
             "add": "Add account",
